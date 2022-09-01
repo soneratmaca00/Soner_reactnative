@@ -5,51 +5,16 @@ import AddButton from '../components/AddButton';
 import FilterList from '../components/FilterList';
 import Header from '../components/Header';
 import ProductList from '../components/ProductList';
-import {token} from '../consts/config';
-import { Context } from '../context/Context';
+import {categoriesURL, productsURL} from '../consts/urls';
+import useFetch from '../hooks/useFetch';
 
 function Home() {
   const navigation = useNavigation();
-  const [products, setProducts] = React.useState();
-  const [loading, setLoading] = React.useState(true);
-  const {categories, setCategories} = React.useContext(Context);
   const [filteredProducts, setFilteredProducts] = React.useState();
   const [selectedCategory, setSelectedCategory] = React.useState(true);
 
-  var myHeaders = new Headers();
-  myHeaders.append('Authorization', `Bearer ${token}`);
-
-  var requestOptions = {
-    method: 'GET',
-    headers: myHeaders,
-  };
-
-  const getProducts = () => {
-    fetch(
-      'https://upayments-studycase-api.herokuapp.com/api/products',
-      requestOptions,
-    )
-      .then(response => response.json())
-      .then(result => {
-        setProducts(result?.products);
-        setLoading(false);
-      })
-      .catch(error => console.log('error', error));
-  };
-  const getCategories = () => {
-    fetch(
-      'https://upayments-studycase-api.herokuapp.com/api/categories/',
-      requestOptions,
-    )
-      .then(response => response.json())
-      .then(result => setCategories(result?.categories.reverse()))
-      .catch(error => console.log('error', error));
-  };
-
-  React.useEffect(() => {
-    getProducts();
-    getCategories();
-  }, []);
+  const {data: products, loading} = useFetch(productsURL);
+  const {data: categories} = useFetch(categoriesURL);
 
   React.useEffect(() => {
     const filterProducts = products?.filter(item => {
@@ -58,9 +23,9 @@ function Home() {
     setFilteredProducts(filterProducts);
   }, [selectedCategory, products]);
 
-  const handleChange = (item) => {
-    setSelectedCategory(item)
-  }
+  const handleChange = item => {
+    setSelectedCategory(item);
+  };
   return (
     <View style={styles.container}>
       {loading ? (

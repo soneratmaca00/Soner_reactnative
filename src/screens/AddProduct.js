@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {View, Text, ActivityIndicator, StyleSheet, Image} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import {colors, spacing} from '../consts/consts';
 import CustomTextInput from '../components/TextInput';
 import Typography from '../components/Typography';

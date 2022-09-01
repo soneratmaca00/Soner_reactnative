@@ -1,40 +1,15 @@
 import * as React from 'react';
-import {View, Text, ActivityIndicator, StyleSheet, Image} from 'react-native';
-import {token} from '../consts/config';
+import {View, ActivityIndicator, StyleSheet, Image} from 'react-native';
 import {colors, spacing} from '../consts/consts';
 import Typography from '../components/Typography';
+import {singleProductURL} from '../consts/urls';
+import useFetch from '../hooks/useFetch';
 
 const imageHeight = 200;
 
 function DetailPage({route}) {
   const {id} = route.params;
-  const [loading, setLoading] = React.useState(true);
-  const [productDetail, setProductDetail] = React.useState(true);
-
-  var myHeaders = new Headers();
-  myHeaders.append('Authorization', `Bearer ${token}`);
-
-  var requestOptions = {
-    method: 'GET',
-    headers: myHeaders,
-  };
-
-  const getProductDetail = () => {
-    fetch(
-      `https://upayments-studycase-api.herokuapp.com/api/products/${id}`,
-      requestOptions,
-    )
-      .then(response => response.json())
-      .then(result => {
-        setProductDetail(result?.product);
-        setLoading(false);
-      })
-      .catch(error => console.log('error', error));
-  };
-  React.useEffect(() => {
-    getProductDetail();
-  }, []);
-
+  const {data: productDetail, loading} = useFetch(singleProductURL + id);
   return (
     <View style={styles.container}>
       {loading ? (
